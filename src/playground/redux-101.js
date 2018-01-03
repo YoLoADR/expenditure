@@ -3,12 +3,18 @@ import { createStore } from 'redux';
 const store = createStore((state = { count: 33 }, action) => {
     switch (action.type) {
         case 'INCREMENT':
+            const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
             return {
-                count: state.count + 1
+                count: state.count + incrementBy
             }
         case 'DECREMENT':
+            const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1;
             return {
-                count: state.count - 1
+                count: state.count - decrementBy
+            }
+        case 'SET':
+            return {
+                count: action.count
             }
         case 'RESET':
             return {
@@ -18,8 +24,23 @@ const store = createStore((state = { count: 33 }, action) => {
     }
 });
 
-console.log("Before dispatch $event", store.getState());
+store.subscribe(() => {
+    console.log("Dispatch $event", store.getState());
+});
+
+
+store.dispatch({
+    type: 'DECREMENT',
+    decrementBy: 10
+});
+store.dispatch({
+    type: 'INCREMENT',
+    incrementBy: 10
+});
 store.dispatch({
     type: 'RESET'
 });
-console.log("After dispatch $event", store.getState());
+store.dispatch({
+    type: 'SET',
+    count: 333
+});
